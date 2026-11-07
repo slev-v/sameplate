@@ -23,8 +23,9 @@ services:
         condition: service_healthy
 
     command: >
-      uvicorn sameplate.main:app
+      uvicorn sameplate.main:create_app
       --host 0.0.0.0
+      --factory
       --port 8000
       --reload
       --reload-dir /app/src

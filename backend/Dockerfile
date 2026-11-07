@@ -20,4 +20,4 @@ RUN uv sync --locked
 
 EXPOSE 8000
 
-CMD ["uvicorn", "sameplate.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+CMD ["uvicorn", "sameplate.main:create_app", "--host", "0.0.0.0", "--port", "8000", "--factory"]
