@@ -9,8 +9,8 @@ from sqlalchemy.ext.asyncio import (
 from sameplate.core.config import Settings
 
 
-def create_db_engine(settings: Settings) -> AsyncEngine:
-    url = URL.create(
+def create_db_url(settings: Settings) -> URL:
+    return URL.create(
         drivername="postgresql+asyncpg",
         username=settings.postgres_user,
         password=settings.postgres_password.get_secret_value(),
@@ -19,7 +19,9 @@ def create_db_engine(settings: Settings) -> AsyncEngine:
         database=settings.postgres_db,
     )
 
-    return create_async_engine(url, pool_pre_ping=True)
+
+def create_db_engine(settings: Settings) -> AsyncEngine:
+    return create_async_engine(create_db_url(settings), pool_pre_ping=True)
 
 
 def create_session_factory(engine: AsyncEngine) -> async_sessionmaker[AsyncSession]:
