@@ -10,6 +10,7 @@ services:
 
     volumes:
       - ./backend:/app
+      - ./sample_data:/sample_data:ro
 
     environment:
       POSTGRES_HOST: db

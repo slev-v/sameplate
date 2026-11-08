@@ -1,0 +1,87 @@
+[
+  {
+    "title": "Омлет с помидором",
+    "description": "Быстрый омлет с помидором на сковороде.",
+    "instructions": "Нарежьте помидор. Взбейте яйца с молоком и солью. Разогрейте масло на сковороде, слегка обжарьте помидор. Влейте яичную смесь и готовьте под крышкой на небольшом огне до полной готовности.",
+    "cooking_time_minutes": 15,
+    "difficulty": "easy",
+    "dish_type": "main",
+    "servings": 1,
+    "image_url": null,
+    "ingredients": [
+      {"name": "яйцо", "quantity": "2", "unit": "piece", "note": null, "is_required": true},
+      {"name": "помидор", "quantity": "1", "unit": "piece", "note": null, "is_required": true},
+      {"name": "молоко", "quantity": "30", "unit": "ml", "note": null, "is_required": true},
+      {"name": "растительное масло", "quantity": "1", "unit": "tsp", "note": "Для жарки", "is_required": true},
+      {"name": "соль", "quantity": null, "unit": null, "note": "По вкусу", "is_required": false}
+    ]
+  },
+  {
+    "title": "Салат из помидоров и огурцов",
+    "description": "Овощной салат с масляной заправкой.",
+    "instructions": "Вымойте овощи. Нарежьте помидоры и огурец, сложите в миску. Добавьте масло и соль, перемешайте. При желании посыпьте нарезанной петрушкой.",
+    "cooking_time_minutes": 10,
+    "difficulty": "easy",
+    "dish_type": "salad",
+    "servings": 2,
+    "image_url": null,
+    "ingredients": [
+      {"name": "помидор", "quantity": "2", "unit": "piece", "note": null, "is_required": true},
+      {"name": "огурец", "quantity": "1", "unit": "piece", "note": null, "is_required": true},
+      {"name": "растительное масло", "quantity": "1", "unit": "tbsp", "note": null, "is_required": true},
+      {"name": "соль", "quantity": null, "unit": null, "note": "По вкусу", "is_required": false},
+      {"name": "петрушка", "quantity": null, "unit": null, "note": "Для подачи", "is_required": false}
+    ]
+  },
+  {
+    "title": "Картофельный суп",
+    "description": "Простой овощной суп с картофелем и морковью.",
+    "instructions": "Очистите и нарежьте овощи. В кастрюле на масле слегка обжарьте лук и морковь. Добавьте картофель и воду. Доведите до кипения и варите на небольшом огне до мягкости овощей. Посолите по вкусу.",
+    "cooking_time_minutes": 35,
+    "difficulty": "easy",
+    "dish_type": "soup",
+    "servings": 3,
+    "image_url": null,
+    "ingredients": [
+      {"name": "картофель", "quantity": "400", "unit": "g", "note": "Масса очищенного продукта", "is_required": true},
+      {"name": "морковь", "quantity": "100", "unit": "g", "note": "Масса очищенного продукта", "is_required": true},
+      {"name": "репчатый лук", "quantity": "100", "unit": "g", "note": "Масса очищенного продукта", "is_required": true},
+      {"name": "растительное масло", "quantity": "1", "unit": "tbsp", "note": null, "is_required": true},
+      {"name": "вода", "quantity": "900", "unit": "ml", "note": null, "is_required": true},
+      {"name": "соль", "quantity": null, "unit": null, "note": "По вкусу", "is_required": false}
+    ]
+  },
+  {
+    "title": "Яблочные оладьи",
+    "description": "Небольшие оладьи с тёртым яблоком.",
+    "instructions": "Взбейте яйцо с молоком и сахаром. Добавьте муку и перемешайте. Натрите яблоко без сердцевины и вмешайте в тесто. Выкладывайте небольшие порции на разогретую сковороду с маслом. Жарьте с двух сторон на умеренном огне до полной готовности.",
+    "cooking_time_minutes": 30,
+    "difficulty": "medium",
+    "dish_type": "dessert",
+    "servings": 2,
+    "image_url": null,
+    "ingredients": [
+      {"name": "яблоко", "quantity": "1", "unit": "piece", "note": null, "is_required": true},
+      {"name": "яйцо", "quantity": "1", "unit": "piece", "note": null, "is_required": true},
+      {"name": "молоко", "quantity": "100", "unit": "ml", "note": null, "is_required": true},
+      {"name": "пшеничная мука", "quantity": "100", "unit": "g", "note": null, "is_required": true},
+      {"name": "сахар", "quantity": "1", "unit": "tbsp", "note": null, "is_required": false},
+      {"name": "растительное масло", "quantity": "1", "unit": "tbsp", "note": "Для жарки", "is_required": true}
+    ]
+  },
+  {
+    "title": "Горячие бутерброды с помидором и сыром",
+    "description": "Хлеб с помидором и расплавленным сыром.",
+    "instructions": "Разогрейте духовку до 180 градусов. Нарежьте помидор и сыр. Разложите помидор на ломтиках хлеба, накройте сыром. Запекайте около 10 минут до расплавления сыра.",
+    "cooking_time_minutes": 20,
+    "difficulty": "easy",
+    "dish_type": "snack",
+    "servings": 2,
+    "image_url": null,
+    "ingredients": [
+      {"name": "хлеб", "quantity": "100", "unit": "g", "note": "Четыре ломтика", "is_required": true},
+      {"name": "помидор", "quantity": "1", "unit": "piece", "note": null, "is_required": true},
+      {"name": "твёрдый сыр", "quantity": "80", "unit": "g", "note": null, "is_required": true}
+    ]
+  }
+]
