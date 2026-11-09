@@ -6,6 +6,7 @@ from fastapi import FastAPI
 from sameplate.core.config import Settings
 from sameplate.db.session import create_db_engine, create_session_factory
 from sameplate.health import router as health_router
+from sameplate.recipes.router import router as recipes_router
 
 
 def create_app(settings: Settings | None = None) -> FastAPI:
@@ -25,4 +26,5 @@ def create_app(settings: Settings | None = None) -> FastAPI:
 
     app = FastAPI(title="sameplate", lifespan=lifespan, debug=settings.debug)
     app.include_router(health_router)
+    app.include_router(recipes_router)
     return app

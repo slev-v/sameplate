@@ -1,33 +1,11 @@
 from decimal import Decimal
-from enum import Enum
 
 from sqlalchemy import CheckConstraint, ForeignKey, Numeric, String, Text, true
 from sqlalchemy import Enum as SAEnum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from sameplate.db.base import Base
-
-
-class DifficultyEnum(str, Enum):
-    EASY = "easy"
-    MEDIUM = "medium"
-    HARD = "hard"
-
-
-class DishTypeEnum(str, Enum):
-    MAIN = "main"
-    SALAD = "salad"
-    SOUP = "soup"
-    DESSERT = "dessert"
-    SNACK = "snack"
-
-
-class UnitEnum(str, Enum):
-    GRAM = "g"
-    MILLILITER = "ml"
-    PIECE = "piece"
-    TEASPOON = "tsp"
-    TABLESPOON = "tbsp"
+from sameplate.recipes.enums import DifficultyEnum, DishTypeEnum, UnitEnum
 
 
 class Recipe(Base):
