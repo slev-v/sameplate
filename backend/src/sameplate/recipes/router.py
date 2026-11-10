@@ -4,7 +4,12 @@ from fastapi import APIRouter, HTTPException, Path, Query, status
 
 from sameplate.core.dependencies import SessionDep
 from sameplate.recipes import queries
-from sameplate.recipes.schemas import RecipeDetail, RecipeIngredientRead, RecipeSummary
+from sameplate.recipes.schemas import (
+    ListRecipesRequestSchema,
+    RecipeDetail,
+    RecipeIngredientRead,
+    RecipeSummary,
+)
 
 router = APIRouter(prefix="/api/v1/recipes", tags=["recipes"])
 
@@ -12,10 +17,16 @@ router = APIRouter(prefix="/api/v1/recipes", tags=["recipes"])
 @router.get("", response_model=list[RecipeSummary])
 async def list_recipes(
     session: SessionDep,
-    limit: Annotated[int, Query(ge=1, le=100)] = 20,
-    offset: Annotated[int, Query(ge=0)] = 0,
+    params: Annotated[ListRecipesRequestSchema, Query()],
 ) -> list[RecipeSummary]:
-    recipes = await queries.list_recipes(session, limit=limit, offset=offset)
+    recipes = await queries.list_recipes(
+        session,
+        max_time_minutes=params.max_time_minutes,
+        max_difficulty=params.max_difficulty,
+        dish_type=params.dish_type,
+        limit=params.limit,
+        offset=params.offset,
+    )
 
     return [RecipeSummary.model_validate(recipe) for recipe in recipes]
 
