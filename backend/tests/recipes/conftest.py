@@ -13,7 +13,7 @@ async def recipe_ids(db_session: AsyncSession) -> dict[str, int]:
 
     first = Recipe(
         title="First recipe",
-        description="Recipe for ingridient tests",
+        description="Recipe for ingredient tests",
         instructions="Cook your dish",
         cooking_time_minutes=15,
         difficulty=DifficultyEnum.EASY,
@@ -27,12 +27,19 @@ async def recipe_ids(db_session: AsyncSession) -> dict[str, int]:
                 unit=UnitEnum.TABLESPOON,
                 note=None,
                 is_required=True,
-            )
+            ),
+            RecipeIngredient(
+                ingredient=Ingredient(name="salt"),
+                quantity=None,
+                unit=None,
+                note="To taste",
+                is_required=False,
+            ),
         ],
     )
     second = Recipe(
         title="Second recipe",
-        description="Recipe for ingridient tests",
+        description="Recipe for ingredient tests",
         instructions="Cook your dish",
         cooking_time_minutes=30,
         difficulty=DifficultyEnum.EASY,
@@ -42,7 +49,7 @@ async def recipe_ids(db_session: AsyncSession) -> dict[str, int]:
     )
     third = Recipe(
         title="Third recipe",
-        description="Recipe for ingridient tests",
+        description="Recipe for ingredient tests",
         instructions="Cook your dish",
         cooking_time_minutes=15,
         difficulty=DifficultyEnum.MEDIUM,
@@ -52,7 +59,7 @@ async def recipe_ids(db_session: AsyncSession) -> dict[str, int]:
     )
     fourth = Recipe(
         title="Fourth recipe",
-        description="Recipe for ingridient tests",
+        description="Recipe for ingredient tests",
         instructions="Cook your dish",
         cooking_time_minutes=15,
         difficulty=DifficultyEnum.EASY,
@@ -62,7 +69,7 @@ async def recipe_ids(db_session: AsyncSession) -> dict[str, int]:
     )
     fifth = Recipe(
         title="Fifth recipe",
-        description="Recipe for ingridient tests",
+        description="Recipe for ingredient tests",
         instructions="Cook your dish",
         cooking_time_minutes=45,
         difficulty=DifficultyEnum.HARD,

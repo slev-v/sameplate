@@ -33,8 +33,8 @@ class RecipeDetail(RecipeSummary):
 
 
 class ListRecipesRequestSchema(BaseModel):
-    max_time_minutes: int | None = Field(gt=0, default=None)
+    max_time_minutes: int | None = Field(gt=0, le=2_147_483_647, default=None)
     max_difficulty: DifficultyEnum | None = None
     dish_type: DishTypeEnum | None = None
     limit: int = Field(ge=1, le=100, default=20)
-    offset: int = Field(ge=0, default=0)
+    offset: int = Field(ge=0, le=2_147_483_647, default=0)

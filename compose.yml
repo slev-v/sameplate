@@ -83,7 +83,7 @@ services:
     depends_on:
       db-test:
         condition: service_healthy
-    command: ["pytest", "-q"]
+    command: ["sh", "-c", "alembic upgrade head && pytest -q"]
 
 
 volumes:

@@ -12,11 +12,11 @@ from sameplate.main import create_app
 
 
 @pytest.fixture
-def test_settings():
+def test_settings() -> Settings:
     settings = Settings()  # pyright: ignore[reportCallIssue]
 
     if settings.postgres_host != "db-test" or settings.postgres_db != "sameplate_test":
-        raise RuntimeError("Run this tests through Compose")
+        raise RuntimeError("Run these tests through Compose")
 
     return settings
 

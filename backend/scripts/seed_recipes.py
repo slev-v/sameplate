@@ -9,14 +9,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from sameplate.core.config import Settings
 from sameplate.db.session import create_db_engine, create_session_factory
-from sameplate.recipes.models import (
-    DifficultyEnum,
-    DishTypeEnum,
-    Ingredient,
-    Recipe,
-    RecipeIngredient,
-    UnitEnum,
-)
+from sameplate.recipes.enums import DifficultyEnum, DishTypeEnum, UnitEnum
+from sameplate.recipes.models import Ingredient, Recipe, RecipeIngredient
 
 
 async def insert_recipes(

@@ -33,7 +33,7 @@ async def list_recipes(
 
 @router.get("/{recipe_id}", response_model=RecipeDetail)
 async def get_recipe(
-    recipe_id: Annotated[int, Path(gt=0)], session: SessionDep
+    recipe_id: Annotated[int, Path(gt=0, le=2_147_483_647)], session: SessionDep
 ) -> RecipeDetail:
     recipe = await queries.get_recipe(session, recipe_id)
 

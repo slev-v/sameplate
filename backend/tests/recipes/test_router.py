@@ -128,14 +128,20 @@ async def test_get_recipe_with_ingredients(
     data = response.json()
     assert data["id"] == recipe_id
     assert data["instructions"] == "Cook your dish"
-    assert len(data["ingredients"]) == 1
+    assert len(data["ingredients"]) == 2
 
-    ingredient = data["ingredients"][0]
+    ingredients = {item["name"]: item for item in data["ingredients"]}
+    ingredient = ingredients["flour"]
     assert ingredient["name"] == "flour"
     assert Decimal(ingredient["quantity"]) == Decimal("0.500")
     assert ingredient["unit"] == "tbsp"
     assert ingredient["note"] is None
     assert ingredient["is_required"] is True
+
+    assert ingredients["salt"]["quantity"] is None
+    assert ingredients["salt"]["unit"] is None
+    assert ingredients["salt"]["note"] == "To taste"
+    assert ingredients["salt"]["is_required"] is False
 
 
 async def test_get_recipe_not_found(client: AsyncClient):
@@ -145,10 +151,36 @@ async def test_get_recipe_not_found(client: AsyncClient):
     assert response.json()["detail"] == "Recipe not found"
 
 
-@pytest.mark.parametrize("params", [{"limit": 0}, {"limit": 101}, {"offset": -1}])
+@pytest.mark.parametrize(
+    "params",
+    [
+        {"limit": 0},
+        {"limit": 101},
+        {"offset": -1},
+        {"offset": 2_147_483_648},
+        {"max_time_minutes": 0},
+        {"max_time_minutes": 2_147_483_648},
+        {"max_difficulty": "unknown"},
+        {"dish_type": "unknown"},
+    ],
+)
 async def test_list_recipes_invalid_pagination(
-    client: AsyncClient, params: dict[str, int]
+    client: AsyncClient, params: dict[str, int | str]
 ):
     response = await client.get("/api/v1/recipes", params=params)
 
     assert response.status_code == 422
+
+
+@pytest.mark.parametrize("recipe_id", [0, -1, 2_147_483_648])
+async def test_get_recipe_invalid_id(client: AsyncClient, recipe_id: int):
+    response = await client.get(f"/api/v1/recipes/{recipe_id}")
+
+    assert response.status_code == 422
+
+
+async def test_filters_without_matches(client: AsyncClient, recipe_ids: dict[str, int]):
+    response = await client.get("/api/v1/recipes", params={"max_time_minutes": 10})
+
+    assert response.status_code == 200
+    assert response.json() == []
