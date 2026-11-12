@@ -1,0 +1,30 @@
+name: Backend checks
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    env:
+      POSTGRES_USER: ci_unused
+      POSTGRES_PASSWORD: ci_unused
+      POSTGRES_DB: ci_unused
+    steps:
+      - uses: actions/checkout@v4
+      - name: Lint
+        run: make lint
+      - name: Check formatting
+        run: make format-check
+      - name: Apply migrations and run API tests
+        run: make test
+      - name: Database logs
+        if: failure()
+        run: docker compose --profile test logs db-test
+      - name: Stop environment
+        if: always()
+        run: docker compose --profile test down
