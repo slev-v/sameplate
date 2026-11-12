@@ -15,7 +15,7 @@ jobs:
       POSTGRES_PASSWORD: ci_unused
       POSTGRES_DB: ci_unused
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Lint
         run: make lint
       - name: Check formatting
