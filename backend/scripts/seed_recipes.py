@@ -8,7 +8,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from sameplate.core.config import Settings
-from sameplate.db.session import create_db_engine, create_session_factory
+from sameplate.infrastructure.db.session import create_db_engine, create_session_factory
 from sameplate.recipes.enums import DifficultyEnum, DishTypeEnum, UnitEnum
 from sameplate.recipes.models import Ingredient, Recipe, RecipeIngredient
 

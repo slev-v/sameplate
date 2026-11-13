@@ -4,7 +4,7 @@ from sqlalchemy import CheckConstraint, ForeignKey, Numeric, String, Text, true
 from sqlalchemy import Enum as SAEnum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from sameplate.db.base import Base
+from sameplate.infrastructure.db.base import Base
 from sameplate.recipes.enums import DifficultyEnum, DishTypeEnum, UnitEnum
 
 

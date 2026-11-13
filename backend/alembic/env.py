@@ -8,8 +8,8 @@ from sqlalchemy.ext.asyncio import create_async_engine
 
 import sameplate.recipes.models  # noqa: F401
 from sameplate.core.config import Settings
-from sameplate.db.base import Base
-from sameplate.db.session import create_db_url
+from sameplate.infrastructure.db.base import Base
+from sameplate.infrastructure.db.session import create_db_url
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

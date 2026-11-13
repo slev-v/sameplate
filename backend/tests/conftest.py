@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from sameplate.core.config import Settings
 from sameplate.core.dependencies import get_session
-from sameplate.db.session import create_db_engine
+from sameplate.infrastructure.db.session import create_db_engine
 from sameplate.main import create_app
 
 

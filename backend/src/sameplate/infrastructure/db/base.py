@@ -1,3 +1,5 @@
+"""Declarative base and naming conventions shared by all ORM models."""
+
 from sqlalchemy import MetaData
 from sqlalchemy.orm import DeclarativeBase
 
