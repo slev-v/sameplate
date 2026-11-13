@@ -19,6 +19,8 @@ class RecipeSummary(BaseModel):
 
 
 class RecipeIngredientRead(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     ingredient_id: int
     name: str = Field(max_length=150)
     quantity: Decimal | None = Field(gt=0)

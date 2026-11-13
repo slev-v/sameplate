@@ -4,6 +4,9 @@ from typing import Annotated
 from fastapi import Depends, Request
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
+from sameplate.application.recipes.ports import RecipeReader
+from sameplate.infrastructure.db.readers.recipes import SqlAlchemyRecipeReader
+
 
 async def get_session(request: Request) -> AsyncIterator[AsyncSession]:
     session_factory: async_sessionmaker[AsyncSession] = (
@@ -15,3 +18,10 @@ async def get_session(request: Request) -> AsyncIterator[AsyncSession]:
 
 
 SessionDep = Annotated[AsyncSession, Depends(get_session)]
+
+
+def get_recipe_reader(session: SessionDep) -> RecipeReader:
+    return SqlAlchemyRecipeReader(session)
+
+
+RecipeReaderDep = Annotated[RecipeReader, Depends(get_recipe_reader)]
