@@ -7,27 +7,38 @@ from pathlib import Path
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from sameplate.application.recipes.use_cases import register_ingredient_name
 from sameplate.core.config import Settings
+from sameplate.domain.recipes.enums import DifficultyEnum, DishTypeEnum, UnitEnum
+from sameplate.domain.recipes.value_objects import IngredientName
+from sameplate.infrastructure.db.models.recipes import (
+    IngredientModel,
+    IngredientNameModel,
+    RecipeIngredientModel,
+    RecipeModel,
+)
+from sameplate.infrastructure.db.repositories.ingredient_names import (
+    SqlAlchemyIngredientNameRepository,
+)
 from sameplate.infrastructure.db.session import create_db_engine, create_session_factory
-from sameplate.recipes.enums import DifficultyEnum, DishTypeEnum, UnitEnum
-from sameplate.recipes.models import Ingredient, Recipe, RecipeIngredient
 
 
 async def insert_recipes(
     session: AsyncSession,
     recipes_data: list[dict],
 ) -> None:
-    existing_recipe_id = await session.scalar(select(Recipe.id).limit(1))
+    repository = SqlAlchemyIngredientNameRepository(session)
+    existing_recipe_id = await session.scalar(select(RecipeModel.id).limit(1))
     if existing_recipe_id is not None:
         raise ValueError("Каталог уже содержит рецепты. Начальная загрузка отменена.")
 
-    existing_ingredients = await session.scalars(select(Ingredient))
-    ingredients_by_name = {
-        ingredient.name: ingredient for ingredient in existing_ingredients
-    }
+    existing_names = await session.execute(
+        select(IngredientNameModel.name, IngredientModel).join(IngredientModel)
+    )
+    ingredients_by_name = {name: ingredient for name, ingredient in existing_names}
 
     for data in recipes_data:
-        recipe = Recipe(
+        recipe = RecipeModel(
             title=data["title"],
             description=data["description"],
             instructions=data["instructions"],
@@ -39,14 +50,17 @@ async def insert_recipes(
         )
 
         for item in data["ingredients"]:
-            name = item["name"].strip().casefold()
-            if not name:
-                raise ValueError("Название ингредиента не может быть пустым.")
+            name = IngredientName(item["name"]).value
 
             ingredient = ingredients_by_name.get(name)
 
             if ingredient is None:
-                ingredient = Ingredient(name=name)
+                ingredient = IngredientModel(name=name)
+                session.add(ingredient)
+                await session.flush()
+                await register_ingredient_name(
+                    ingredient.id, name, repository=repository
+                )
                 ingredients_by_name[name] = ingredient
 
             quantity = (
@@ -55,7 +69,7 @@ async def insert_recipes(
             unit = UnitEnum(item["unit"]) if item["unit"] is not None else None
 
             recipe.ingredient_links.append(
-                RecipeIngredient(
+                RecipeIngredientModel(
                     ingredient=ingredient,
                     quantity=quantity,
                     unit=unit,

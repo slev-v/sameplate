@@ -2,7 +2,7 @@ from decimal import Decimal
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from sameplate.recipes.enums import DifficultyEnum, DishTypeEnum, UnitEnum
+from sameplate.domain.recipes.enums import DifficultyEnum, DishTypeEnum, UnitEnum
 
 
 class RecipeSummary(BaseModel):

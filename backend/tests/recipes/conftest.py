@@ -3,15 +3,19 @@ from decimal import Decimal
 import pytest_asyncio
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from sameplate.recipes.enums import DifficultyEnum, DishTypeEnum, UnitEnum
-from sameplate.recipes.models import Ingredient, Recipe, RecipeIngredient
+from sameplate.domain.recipes.enums import DifficultyEnum, DishTypeEnum, UnitEnum
+from sameplate.infrastructure.db.models.recipes import (
+    IngredientModel,
+    RecipeIngredientModel,
+    RecipeModel,
+)
 
 
 @pytest_asyncio.fixture
 async def recipe_ids(db_session: AsyncSession) -> dict[str, int]:
-    ingredient = Ingredient(name="flour")
+    ingredient = IngredientModel(name="flour")
 
-    first = Recipe(
+    first = RecipeModel(
         title="First recipe",
         description="Recipe for ingredient tests",
         instructions="Cook your dish",
@@ -21,15 +25,15 @@ async def recipe_ids(db_session: AsyncSession) -> dict[str, int]:
         servings=1,
         image_url=None,
         ingredient_links=[
-            RecipeIngredient(
+            RecipeIngredientModel(
                 ingredient=ingredient,
                 quantity=Decimal("0.500"),
                 unit=UnitEnum.TABLESPOON,
                 note=None,
                 is_required=True,
             ),
-            RecipeIngredient(
-                ingredient=Ingredient(name="salt"),
+            RecipeIngredientModel(
+                ingredient=IngredientModel(name="salt"),
                 quantity=None,
                 unit=None,
                 note="To taste",
@@ -37,7 +41,7 @@ async def recipe_ids(db_session: AsyncSession) -> dict[str, int]:
             ),
         ],
     )
-    second = Recipe(
+    second = RecipeModel(
         title="Second recipe",
         description="Recipe for ingredient tests",
         instructions="Cook your dish",
@@ -47,7 +51,7 @@ async def recipe_ids(db_session: AsyncSession) -> dict[str, int]:
         servings=2,
         image_url=None,
     )
-    third = Recipe(
+    third = RecipeModel(
         title="Third recipe",
         description="Recipe for ingredient tests",
         instructions="Cook your dish",
@@ -57,7 +61,7 @@ async def recipe_ids(db_session: AsyncSession) -> dict[str, int]:
         servings=2,
         image_url=None,
     )
-    fourth = Recipe(
+    fourth = RecipeModel(
         title="Fourth recipe",
         description="Recipe for ingredient tests",
         instructions="Cook your dish",
@@ -67,7 +71,7 @@ async def recipe_ids(db_session: AsyncSession) -> dict[str, int]:
         servings=2,
         image_url=None,
     )
-    fifth = Recipe(
+    fifth = RecipeModel(
         title="Fifth recipe",
         description="Recipe for ingredient tests",
         instructions="Cook your dish",

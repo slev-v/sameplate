@@ -4,11 +4,11 @@ from sqlalchemy import CheckConstraint, ForeignKey, Numeric, String, Text, true
 from sqlalchemy import Enum as SAEnum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
+from sameplate.domain.recipes.enums import DifficultyEnum, DishTypeEnum, UnitEnum
 from sameplate.infrastructure.db.base import Base
-from sameplate.recipes.enums import DifficultyEnum, DishTypeEnum, UnitEnum
 
 
-class Recipe(Base):
+class RecipeModel(Base):
     __tablename__ = "recipes"
 
     __table_args__ = (
@@ -54,21 +54,40 @@ class Recipe(Base):
     servings: Mapped[int] = mapped_column()
     image_url: Mapped[str | None] = mapped_column()
 
-    ingredient_links: Mapped[list[RecipeIngredient]] = relationship(
+    ingredient_links: Mapped[list[RecipeIngredientModel]] = relationship(
         back_populates="recipe",
         cascade="all, delete-orphan",
         passive_deletes=True,
     )
 
 
-class Ingredient(Base):
+class IngredientModel(Base):
     __tablename__ = "ingredients"
 
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(150), unique=True)
 
+    names: Mapped[list[IngredientNameModel]] = relationship(
+        back_populates="ingredient",
+        cascade="all, delete-orphan",
+        passive_deletes=True,
+    )
 
-class RecipeIngredient(Base):
+
+class IngredientNameModel(Base):
+    __tablename__ = "ingredient_names"
+    __table_args__ = (CheckConstraint("length(trim(name)) > 0", name="nonempty_name"),)
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    ingredient_id: Mapped[int] = mapped_column(
+        ForeignKey("ingredients.id", ondelete="CASCADE"), index=True
+    )
+    name: Mapped[str] = mapped_column(String(150), unique=True)
+
+    ingredient: Mapped[IngredientModel] = relationship(back_populates="names")
+
+
+class RecipeIngredientModel(Base):
     __tablename__ = "recipe_ingredients"
 
     __table_args__ = (
@@ -108,7 +127,7 @@ class RecipeIngredient(Base):
         server_default=true(),
     )
 
-    recipe: Mapped[Recipe] = relationship(
+    recipe: Mapped[RecipeModel] = relationship(
         back_populates="ingredient_links",
     )
-    ingredient: Mapped[Ingredient] = relationship()
+    ingredient: Mapped[IngredientModel] = relationship()
