@@ -24,7 +24,7 @@ services:
         condition: service_healthy
 
     command: >
-      uvicorn sameplate.main:create_app
+      uvicorn sameplate.presentation.api.main:create_app
       --host 0.0.0.0
       --factory
       --port 8000

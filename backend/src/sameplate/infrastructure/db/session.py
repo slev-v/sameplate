@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio import (
     create_async_engine,
 )
 
-from sameplate.core.config import Settings
+from sameplate.infrastructure.config import Settings
 
 
 def create_db_url(settings: Settings) -> URL:

@@ -5,10 +5,10 @@ import pytest_asyncio
 from httpx import ASGITransport, AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from sameplate.core.config import Settings
+from sameplate.infrastructure.config import Settings
 from sameplate.infrastructure.db.session import create_db_engine
-from sameplate.main import create_app
 from sameplate.presentation.api.dependencies import get_session
+from sameplate.presentation.api.main import create_app
 
 
 @pytest.fixture

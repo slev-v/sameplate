@@ -1,8 +1,8 @@
 import pytest
 from httpx import ASGITransport, AsyncClient
 
-from sameplate.core.config import Settings
-from sameplate.main import create_app
+from sameplate.infrastructure.config import Settings
+from sameplate.presentation.api.main import create_app
 
 
 @pytest.mark.asyncio

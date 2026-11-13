@@ -3,9 +3,9 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 
-from sameplate.core.config import Settings
-from sameplate.health import router as health_router
+from sameplate.infrastructure.config import Settings
 from sameplate.infrastructure.db.session import create_db_engine, create_session_factory
+from sameplate.presentation.api.health import router as health_router
 from sameplate.presentation.api.recipes.router import router as recipes_router
 
 

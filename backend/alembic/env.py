@@ -7,7 +7,7 @@ from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import create_async_engine
 
 import sameplate.infrastructure.db.models.recipes  # noqa: F401
-from sameplate.core.config import Settings
+from sameplate.infrastructure.config import Settings
 from sameplate.infrastructure.db.base import Base
 from sameplate.infrastructure.db.session import create_db_url
 

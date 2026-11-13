@@ -8,9 +8,9 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from sameplate.application.recipes.use_cases import register_ingredient_name
-from sameplate.core.config import Settings
 from sameplate.domain.recipes.enums import DifficultyEnum, DishTypeEnum, UnitEnum
 from sameplate.domain.recipes.value_objects import IngredientName
+from sameplate.infrastructure.config import Settings
 from sameplate.infrastructure.db.models.recipes import (
     IngredientModel,
     IngredientNameModel,
