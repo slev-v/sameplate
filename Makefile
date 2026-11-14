@@ -6,7 +6,7 @@ TEST_DC = env POSTGRES_USER=test_user POSTGRES_PASSWORD=test_password POSTGRES_D
 
 export MESSAGE
 
-.PHONY: help build up down logs ps migrate revision seed test test-stop lint format-check format check
+.PHONY: help build up down logs ps migrate revision seed seed-ingredient-names test test-stop lint format-check format check
 
 help:
 	@printf '%s\n' \
@@ -19,6 +19,7 @@ help:
 	  '  make migrate            Apply dev database migrations' \
 	  '  make revision MESSAGE="description"  Generate a migration for review' \
 	  '  make seed               Populate an empty dev recipe catalog' \
+	  '  make seed-ingredient-names  Load ingredient synonyms after seeding recipes; safe to repeat' \
 	  '' \
 	  'Checks (Docker only; no local Python or .env required):' \
 	  '  make test               Build, migrate db-test and run pytest' \
@@ -52,6 +53,9 @@ revision:
 
 seed:
 	$(DC) run --build --rm backend python scripts/seed_recipes.py /sample_data/dev/recipes.json
+
+seed-ingredient-names:
+	$(DC) run --build --rm backend python scripts/seed_ingredient_names.py /sample_data/dev/ingredient_names.json
 
 test:
 	$(TEST_DC) run --build --rm tests
