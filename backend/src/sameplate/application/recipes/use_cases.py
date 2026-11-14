@@ -7,13 +7,15 @@ from sameplate.application.recipes.dto import (
     RecipeFilters,
     RecipeSummaryDTO,
 )
+from sameplate.application.recipes.exceptions import UnknownIngredientsError
 from sameplate.application.recipes.ports import (
     IngredientNameRepository,
     IngredientReader,
     RecipeReader,
 )
+from sameplate.domain.recipes.enums import SelectionModeEnum
 from sameplate.domain.recipes.exceptions import IngredientNameConflict
-from sameplate.domain.recipes.value_objects import IngredientName
+from sameplate.domain.recipes.value_objects import IngredientName, SelectionPreferences
 
 
 async def register_ingredient_name(
@@ -48,3 +50,17 @@ async def list_ingredients(
         # Search equivalence leaves registered ingredient names unchanged.
         q = q.replace("ё", "е")
     return await reader.list_ingredients(replace(filters, q=q))
+
+
+async def validate_selection_ingredients(
+    preferences: SelectionPreferences, *, reader: IngredientReader
+) -> None:
+    if preferences.mode == SelectionModeEnum.EXPLORE:
+        return
+
+    unknown_ingredient_ids = preferences.ingredient_ids - await reader.get_existing_ids(
+        ingredient_ids=preferences.ingredient_ids
+    )
+
+    if unknown_ingredient_ids:
+        raise UnknownIngredientsError(unknown_ingredient_ids)

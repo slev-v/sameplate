@@ -26,3 +26,7 @@ class IngredientReader(Protocol):
     async def list_ingredients(self, filters: IngredientFilters) -> list[IngredientDTO]:
         """Read a page using a normalized query, or None for the full catalog."""
         ...
+
+    async def get_existing_ids(
+        self, ingredient_ids: frozenset[int]
+    ) -> frozenset[int]: ...

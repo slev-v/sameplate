@@ -35,3 +35,10 @@ class SqlAlchemyIngredientReader:
         )
         rows = await self._session.execute(statement)
         return [IngredientDTO(id=id_, name=name) for id_, name in rows]
+
+    async def get_existing_ids(self, ingredient_ids: frozenset[int]) -> frozenset[int]:
+        statement = select(IngredientModel.id).where(
+            IngredientModel.id.in_(ingredient_ids)
+        )
+        result = await self._session.scalars(statement)
+        return frozenset(result)

@@ -1,15 +1,18 @@
 import pytest
 
 from sameplate.application.recipes.dto import IngredientDTO, IngredientFilters
+from sameplate.application.recipes.exceptions import UnknownIngredientsError
 from sameplate.application.recipes.use_cases import (
     list_ingredients,
     register_ingredient_name,
+    validate_selection_ingredients,
 )
+from sameplate.domain.recipes.enums import SelectionModeEnum
 from sameplate.domain.recipes.exceptions import (
     IngredientNameConflict,
     InvalidIngredientName,
 )
-from sameplate.domain.recipes.value_objects import IngredientName
+from sameplate.domain.recipes.value_objects import IngredientName, SelectionPreferences
 
 pytestmark = pytest.mark.asyncio
 
@@ -65,3 +68,63 @@ async def test_search_passes_prepared_query_to_reader():
 
     assert received_filters == [IngredientFilters(q="твердый сыр", limit=5, offset=10)]
     assert filters.q == "  ТВЁРДЫЙ\t СЫР "
+
+
+class StubIngredientReader:
+    def __init__(self, existing_ids: frozenset[int]) -> None:
+        self.existing_ids = existing_ids
+        self.calls = 0
+
+    async def get_existing_ids(self, ingredient_ids: frozenset[int]) -> frozenset[int]:
+        self.calls += 1
+        return ingredient_ids & self.existing_ids
+
+    async def list_ingredients(self, filters: IngredientFilters) -> list[IngredientDTO]:
+        raise AssertionError("Listing ingredients was not expected")
+
+
+async def test_selected_ingredients_exist():
+    reader = StubIngredientReader(existing_ids=frozenset({1, 2, 3, 4}))
+    preferences = SelectionPreferences(
+        mode=SelectionModeEnum.PANTRY, ingredient_ids=frozenset({1, 3})
+    )
+
+    result = await validate_selection_ingredients(preferences, reader=reader)
+
+    assert result is None
+    assert reader.calls == 1
+
+
+async def test_selection_rejects_unknown_ingredients():
+    reader = StubIngredientReader(existing_ids=frozenset({1, 3}))
+    preferences = SelectionPreferences(
+        mode=SelectionModeEnum.PANTRY, ingredient_ids=frozenset({1, 2, 3, 4})
+    )
+
+    with pytest.raises(UnknownIngredientsError) as exc_info:
+        await validate_selection_ingredients(preferences, reader=reader)
+
+    error = exc_info.value
+    assert error.unknown_ingredient_ids == (2, 4)
+
+
+async def test_selection_rejects_all_unknown_ingredients():
+    reader = StubIngredientReader(existing_ids=frozenset({}))
+    preferences = SelectionPreferences(
+        mode=SelectionModeEnum.PANTRY, ingredient_ids=frozenset({1, 2, 3, 4})
+    )
+
+    with pytest.raises(UnknownIngredientsError) as exc_info:
+        await validate_selection_ingredients(preferences, reader=reader)
+
+    error = exc_info.value
+    assert error.unknown_ingredient_ids == (1, 2, 3, 4)
+
+
+async def test_explore_skips_ingredient_validation():
+    reader = StubIngredientReader(existing_ids=frozenset({}))
+    preferences = SelectionPreferences(mode=SelectionModeEnum.EXPLORE)
+
+    await validate_selection_ingredients(preferences, reader=reader)
+
+    assert reader.calls == 0
