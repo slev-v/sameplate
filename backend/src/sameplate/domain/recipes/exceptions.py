@@ -4,3 +4,7 @@ class InvalidIngredientName(ValueError):
 
 class IngredientNameConflict(ValueError):
     """A search name already belongs to a different ingredient."""
+
+
+class InvalidSelectionPreferences(ValueError):
+    """Recipe selection preferences are inconsistent with the chosen mode."""

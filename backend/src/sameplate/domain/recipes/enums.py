@@ -1,6 +1,11 @@
 from enum import Enum
 
 
+class SelectionModeEnum(str, Enum):
+    PANTRY = "pantry"
+    EXPLORE = "explore"
+
+
 class DifficultyEnum(str, Enum):
     EASY = "easy"
     MEDIUM = "medium"
