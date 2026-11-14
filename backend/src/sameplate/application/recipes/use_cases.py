@@ -1,9 +1,17 @@
+from dataclasses import replace
+
 from sameplate.application.recipes.dto import (
+    IngredientDTO,
+    IngredientFilters,
     RecipeDetailDTO,
     RecipeFilters,
     RecipeSummaryDTO,
 )
-from sameplate.application.recipes.ports import IngredientNameRepository, RecipeReader
+from sameplate.application.recipes.ports import (
+    IngredientNameRepository,
+    IngredientReader,
+    RecipeReader,
+)
 from sameplate.domain.recipes.exceptions import IngredientNameConflict
 from sameplate.domain.recipes.value_objects import IngredientName
 
@@ -30,3 +38,13 @@ async def list_recipes(
 
 async def get_recipe(recipe_id: int, *, reader: RecipeReader) -> RecipeDetailDTO | None:
     return await reader.get_recipe(recipe_id)
+
+
+async def list_ingredients(
+    filters: IngredientFilters, *, reader: IngredientReader
+) -> list[IngredientDTO]:
+    q = IngredientName(filters.q).value if filters.q and filters.q.strip() else None
+    if q is not None:
+        # Search equivalence leaves registered ingredient names unchanged.
+        q = q.replace("ё", "е")
+    return await reader.list_ingredients(replace(filters, q=q))

@@ -4,7 +4,8 @@ from typing import Annotated
 from fastapi import Depends, Request
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
-from sameplate.application.recipes.ports import RecipeReader
+from sameplate.application.recipes.ports import IngredientReader, RecipeReader
+from sameplate.infrastructure.db.readers.ingredients import SqlAlchemyIngredientReader
 from sameplate.infrastructure.db.readers.recipes import SqlAlchemyRecipeReader
 
 
@@ -25,3 +26,10 @@ def get_recipe_reader(session: SessionDep) -> RecipeReader:
 
 
 RecipeReaderDep = Annotated[RecipeReader, Depends(get_recipe_reader)]
+
+
+def get_ingredient_reader(session: SessionDep) -> IngredientReader:
+    return SqlAlchemyIngredientReader(session)
+
+
+IngredientReaderDep = Annotated[IngredientReader, Depends(get_ingredient_reader)]

@@ -5,6 +5,19 @@ from sameplate.domain.recipes.enums import DifficultyEnum, DishTypeEnum, UnitEnu
 
 
 @dataclass(frozen=True)
+class IngredientFilters:
+    q: str | None = None
+    limit: int = 20
+    offset: int = 0
+
+
+@dataclass(frozen=True)
+class IngredientDTO:
+    id: int
+    name: str
+
+
+@dataclass(frozen=True)
 class RecipeFilters:
     max_time_minutes: int | None = None
     max_difficulty: DifficultyEnum | None = None
