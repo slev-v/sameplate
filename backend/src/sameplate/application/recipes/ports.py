@@ -5,6 +5,7 @@ from sameplate.application.recipes.dto import (
     IngredientFilters,
     RecipeDetailDTO,
     RecipeFilters,
+    RecipeSelectionRequestDTO,
     RecipeSummaryDTO,
 )
 from sameplate.domain.recipes.value_objects import IngredientName
@@ -20,6 +21,10 @@ class RecipeReader(Protocol):
     async def list_recipes(self, filters: RecipeFilters) -> list[RecipeSummaryDTO]: ...
 
     async def get_recipe(self, recipe_id: int) -> RecipeDetailDTO | None: ...
+
+    async def select_recipes(
+        self, request: RecipeSelectionRequestDTO
+    ) -> list[RecipeSummaryDTO]: ...
 
 
 class IngredientReader(Protocol):

@@ -5,6 +5,7 @@ from sameplate.application.recipes.dto import (
     IngredientFilters,
     RecipeDetailDTO,
     RecipeFilters,
+    RecipeSelectionRequestDTO,
     RecipeSummaryDTO,
 )
 from sameplate.application.recipes.exceptions import UnknownIngredientsError
@@ -64,3 +65,14 @@ async def validate_selection_ingredients(
 
     if unknown_ingredient_ids:
         raise UnknownIngredientsError(unknown_ingredient_ids)
+
+
+async def select_recipes(
+    request: RecipeSelectionRequestDTO,
+    ingredient_reader: IngredientReader,
+    recipe_reader: RecipeReader,
+) -> list[RecipeSummaryDTO]:
+    preferences = request.preferences
+    await validate_selection_ingredients(preferences, reader=ingredient_reader)
+
+    return await recipe_reader.select_recipes(request)
