@@ -2,6 +2,10 @@ from decimal import Decimal
 
 import pytest
 from httpx import AsyncClient
+from sqlalchemy import func, select
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from sameplate.infrastructure.db.models.recipes import IngredientModel
 
 pytestmark = pytest.mark.asyncio
 
@@ -181,6 +185,94 @@ async def test_get_recipe_invalid_id(client: AsyncClient, recipe_id: int):
 
 async def test_filters_without_matches(client: AsyncClient, recipe_ids: dict[str, int]):
     response = await client.get("/api/v1/recipes", params={"max_time_minutes": 10})
+
+    assert response.status_code == 200
+    assert response.json() == []
+
+
+async def test_pantry_mode(
+    client: AsyncClient, selection_data: tuple[dict[str, int], frozenset[int]]
+):
+    recipe_ids, available_ids = selection_data
+    response = await client.post(
+        "/api/v1/recipe-selections",
+        json={
+            "mode": "pantry",
+            "ingredient_ids": list(available_ids),
+            "max_missing_ingredients": 0,
+        },
+    )
+
+    assert response.status_code == 200
+
+    data = response.json()
+    assert [recipe["id"] for recipe in data] == [recipe_ids["complete"]]
+
+
+async def test_explore_mode(
+    client: AsyncClient, selection_data: tuple[dict[str, int], frozenset[int]]
+):
+
+    response = await client.post(
+        "/api/v1/recipe-selections", json={"mode": "explore", "limit": 2}
+    )
+
+    assert response.status_code == 200
+
+    data = response.json()
+    assert len(data) == 2
+    assert data[0]["id"] != data[1]["id"]
+
+
+@pytest.mark.parametrize(
+    "payload",
+    [
+        {},
+        {"mode": "unknown"},
+        {"mode": "pantry", "ingredient_ids": []},
+        {"mode": "explore", "ingredient_ids": [1]},
+        {"mode": "explore", "limit": 0},
+    ],
+)
+async def test_selection_invalid_body(
+    client: AsyncClient,
+    payload: dict,
+):
+    response = await client.post("/api/v1/recipe-selections", json=payload)
+
+    assert response.status_code == 422
+
+
+async def test_selection_unknown_ingredients(
+    client: AsyncClient,
+    db_session: AsyncSession,
+    selection_data: tuple[dict[str, int], frozenset[int]],
+):
+    max_id = await db_session.scalar(select(func.max(IngredientModel.id)))
+    unknown_id = (max_id or 0) + 1
+
+    response = await client.post(
+        "/api/v1/recipe-selections",
+        json={"mode": "pantry", "ingredient_ids": [unknown_id]},
+    )
+
+    assert response.status_code == 422
+
+    data = response.json()
+    assert data["detail"]["ingredient_ids"] == [unknown_id]
+
+
+async def test_selection_no_matches(
+    client: AsyncClient,
+    selection_data: tuple[dict[str, int], frozenset[int]],
+):
+    response = await client.post(
+        "/api/v1/recipe-selections",
+        json={
+            "mode": "explore",
+            "max_time_minutes": 10,
+        },
+    )
 
     assert response.status_code == 200
     assert response.json() == []

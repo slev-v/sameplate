@@ -7,6 +7,9 @@ from sameplate.infrastructure.config import Settings
 from sameplate.infrastructure.db.session import create_db_engine, create_session_factory
 from sameplate.presentation.api.health import router as health_router
 from sameplate.presentation.api.ingredients.router import router as ingredients_router
+from sameplate.presentation.api.recipe_selections.router import (
+    router as recipe_selections_router,
+)
 from sameplate.presentation.api.recipes.router import router as recipes_router
 
 
@@ -29,4 +32,5 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.include_router(health_router)
     app.include_router(recipes_router)
     app.include_router(ingredients_router)
+    app.include_router(recipe_selections_router)
     return app

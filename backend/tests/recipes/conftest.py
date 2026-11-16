@@ -96,3 +96,114 @@ async def recipe_ids(db_session: AsyncSession) -> dict[str, int]:
     db_session.expunge_all()
 
     return ids
+
+
+@pytest_asyncio.fixture
+async def selection_data(
+    db_session: AsyncSession,
+) -> tuple[dict[str, int], frozenset[int]]:
+    egg = IngredientModel(name="яйцо")
+    milk = IngredientModel(name="молоко")
+    flour = IngredientModel(name="мука")
+    salt = IngredientModel(name="соль")
+
+    first = RecipeModel(
+        title="Third recipe",
+        description="Recipe for ingredient tests",
+        instructions="Cook your dish",
+        cooking_time_minutes=15,
+        difficulty=DifficultyEnum.EASY,
+        dish_type=DishTypeEnum.MAIN,
+        servings=1,
+        image_url=None,
+        ingredient_links=[
+            RecipeIngredientModel(
+                ingredient=egg,
+                quantity=Decimal(1),
+                unit=UnitEnum.PIECE,
+                note=None,
+                is_required=True,
+            ),
+            RecipeIngredientModel(
+                ingredient=milk,
+                quantity=Decimal(150),
+                unit=UnitEnum.MILLILITER,
+                note=None,
+                is_required=True,
+            ),
+            RecipeIngredientModel(
+                ingredient=flour,
+                quantity=Decimal(500),
+                unit=UnitEnum.GRAM,
+                note=None,
+                is_required=True,
+            ),
+        ],
+    )
+    second = RecipeModel(
+        title="Second recipe",
+        description="Recipe for ingredient tests",
+        instructions="Cook your dish",
+        cooking_time_minutes=15,
+        difficulty=DifficultyEnum.EASY,
+        dish_type=DishTypeEnum.MAIN,
+        servings=1,
+        image_url=None,
+        ingredient_links=[
+            RecipeIngredientModel(
+                ingredient=egg,
+                quantity=Decimal(1),
+                unit=UnitEnum.PIECE,
+                note=None,
+                is_required=True,
+            ),
+            RecipeIngredientModel(
+                ingredient=milk,
+                quantity=Decimal(150),
+                unit=UnitEnum.MILLILITER,
+                note=None,
+                is_required=True,
+            ),
+        ],
+    )
+    third = RecipeModel(
+        title="First recipe",
+        description="Recipe for ingredient tests",
+        instructions="Cook your dish",
+        cooking_time_minutes=15,
+        difficulty=DifficultyEnum.EASY,
+        dish_type=DishTypeEnum.MAIN,
+        servings=1,
+        image_url=None,
+        ingredient_links=[
+            RecipeIngredientModel(
+                ingredient=egg,
+                quantity=Decimal(1),
+                unit=UnitEnum.PIECE,
+                note=None,
+                is_required=True,
+            ),
+            RecipeIngredientModel(
+                ingredient=salt,
+                quantity=None,
+                unit=None,
+                note="To taste",
+                is_required=False,
+            ),
+        ],
+    )
+
+    db_session.add_all([first, second, third])
+    await db_session.flush()
+
+    ids = {
+        "two_missing": first.id,
+        "one_missing": second.id,
+        "complete": third.id,
+    }
+
+    available_ids = frozenset({egg.id})
+
+    db_session.expunge_all()
+
+    return ids, available_ids
